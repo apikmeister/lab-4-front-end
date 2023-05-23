@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)http://frend.skimtech.my/Lab/Lab4/Task2.html -->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Lab 4: Task 2</title>
+
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <style>
+      #boxes {
+        margin-top: 50px;
+        float: left;
+        width: 100%;
+      }
+      #toggles {
+        float: left;
+        width: 100%;
+        margin-top: 10px;
+      }
+      #info {
+        float: left;
+        margin-top: 5px;
+      }
+      .box {
+        width: 50px;
+        height: 50px;
+        float: left;
+      }
+      .outlined {
+        border: 2px solid black;
+      }
+      .round-edge {
+        border-radius: 15px;
+      }
+      .teal {
+        background-color: teal;
+      }
+    </style>
+    <script
+      src="jquery-3.1.1.js.download"
+      integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+      crossorigin="anonymous"
+    ></script>
+    <style type="text/css" id="operaUserStyle"></style>
+
+    <script>
+      var colorTeal = "rgb(57, 204, 204)";
+
+      $(document).ready(function () {
+        $("#button_toggle_colors").click(function () {
+          var box1 = $("#box1");
+
+          if ($(box1).css("background-color") == colorTeal) {
+            $(".box").css("background-color", "");
+          } else {
+            // $(".box").css("background-color", colorTeal);
+            var randomNumber = Math.floor(Math.random() * $(".box").length);
+
+            $(".box").eq(randomNumber).css("background-color", colorTeal);
+          }
+        });
+
+        $("#button_toggle_roundedges").click(function () {
+          var box2 = $("#box2");
+
+          if ($(box2).hasClass("round-edge")) {
+            $(".box").removeClass("round-edge");
+          } else {
+            // $(".box").addClass("round-edge");
+            var randomNumber = Math.floor(Math.random() * $(".box").length);
+
+            $(".box").eq(randomNumber).addClass("round-edge");
+          }
+        });
+
+        $("#button_add_box").click(function () {
+          var new_box = document.createElement("div");
+
+          var existingBoxes = $(".box").length;
+          var nextBoxId = existingBoxes + 1;
+          $(new_box).attr("id", "box" + nextBoxId);
+
+          $(new_box).addClass("box");
+          $(new_box).addClass("outlined");
+
+          $("#boxes").append(new_box);
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div id="boxes">
+        <div id="box1" class="box outlined"></div>
+        <div id="box2" class="box outlined"></div>
+        <div id="box3" class="box outlined"></div>
+      </div>
+
+      <div id="toggles">
+        <h2>Toggles</h2>
+        <button class="btn" id="button_toggle_colors">Toggle Colors</button>
+        <button class="btn" id="button_toggle_roundedges">
+          Toggle Rounded Borders
+        </button>
+        <button class="btn" id="button_add_box">Add a New Box</button>
+      </div>
+    </div>
+  </body>
+</html>
