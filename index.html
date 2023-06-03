@@ -1,86 +1,100 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Product Selection</title>
-    <script>
-      function getProductByChoice() {
-        var selectElement = document.getElementById("productSelect");
-        var selectedOption =
-          selectElement.options[selectElement.selectedIndex].value;
+<html lang="en">
 
-        var xhr = new XMLHttpRequest();
-        xhr.open(
-          "GET",
-          "getProductByChoice.php?choice=" + encodeURIComponent(selectedOption),
-          true
-        );
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            var responseData = JSON.parse(xhr.responseText);
-            displayData(responseData);
-          }
-        };
-        xhr.send();
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON data displaying</title>
+  <style>
+    div{
+      margin: 20px;
+    }
+    table {
+      border-collapse: collapse;
+    }
 
-      function displayData(data) {
-        var table = document.createElement("table");
-        var headerRow = document.createElement("tr");
+    th,
+    td {
+      border: 1px solid black;
+      padding: 8px;
+    }
+  </style>
+</head>
 
-        for (var key in data[0]) {
-          var headerCell = document.createElement("th");
-          headerCell.textContent = key;
-          headerRow.appendChild(headerCell);
+<body>
+  <h3>select an item</h3>
+  <p id="demo2"></p>
+
+  <script>
+    function getProductLine() {
+      var xhttp;
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("demo2").innerHTML = this.responseText;
         }
-        table.appendChild(headerRow);
+      };
+      xhttp.open("GET", "https://skimtech.my/readproductline.php", true);
+      xhttp.send();
+    }
+    getProductLine();
 
-        var displayArea = document.getElementById("displayArea");
-        displayArea.innerHTML = "";
-        displayArea.appendChild(table);
+    function showCustomer(str) {
+      var xhttp;
+      if (str == "") {
+        document.getElementById("txtHint").innerHTML = "";
+        return;
+      }
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          var jsonString = this.responseText;
+          var jsonArray = JSON.parse(jsonString);
+          document.getElementById("numberOfObject").innerHTML =
+            "Number of " + str + " Objects: " + jsonArray.length;
+          document.getElementById("attributes").innerHTML =
+            "Attributes: <b>" + (Object.keys(jsonArray[0]) + "</b>");
+          displayTable.innerHTML = "";
+          displayTable = document.getElementById("displayTable");
+          const table = document.createElement("table");
+          const thead = document.createElement("thead");
+          const tbody = document.createElement("tbody");
 
-        var currentIndex = 0;
-        var interval = setInterval(function () {
-          if (currentIndex < data.length) {
-            var rowData = data[currentIndex];
-            var row = document.createElement("tr");
+          Object.keys(jsonArray[0]).forEach(key => {
+            const th = document.createElement('th');
+            console.log(key);
+            th.textContent = key;
+            thead.appendChild(th);
+          });
+          table.appendChild(thead);
 
-            for (var key in rowData) {
-              var cell = document.createElement("td");
-              cell.textContent = rowData[key];
+          jsonArray.forEach(function (record) {
+            var row = document.createElement('tr');
+            Object.keys(record).forEach(function (key) {
+              var cell = document.createElement('td');
+              cell.textContent = record[key];
               row.appendChild(cell);
-            }
-            table.appendChild(row);
+            });
+            tbody.appendChild(row);
+          });
 
-            currentIndex++;
-          } else {
-            clearInterval(interval);
-          }
-        }, 500);
-      }
-    </script>
-  </head>
-  <body>
-    <h1>Product Selection</h1>
+          table.appendChild(tbody);
+          displayTable.appendChild(table)
 
-    <script>
-      function getProductLine() {
-        var xhttp;
-        xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("demo2").innerHTML = this.responseText;
-          }
-        };
-        xhttp.open("GET", "readproductline.php", true);
-        xhttp.send();
-      }
-      getProductLine();
-    </script>
+        }
+      };
+      xhttp.open(
+        "GET",
+        "https://skimtech.my/getProductByChoice.php?q=" + str,
+        true
+      );
+      xhttp.send();
+    }
+  </script>
+  <div id="numberOfObject">Customer info will be listed here...</div>
+  <div id="attributes"></div>
+  <div id="displayTable"></div>
+</body>
 
-    <br /><br />
-
-    <button onclick="getProductByChoice()">Get Products</button>
-
-    <div id="displayArea"></div>
-  </body>
 </html>
